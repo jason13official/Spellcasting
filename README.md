@@ -1,32 +1,65 @@
-# MultiLoader Template
+# Spellcasting (Abstract Outline/Lore Dump)
 
-This project provides a Gradle project template that can compile Minecraft mods for multiple modloaders using a common project for the sources. This project does not require any third party libraries or dependencies. If you have any questions or want to discuss the project, please join our [Discord](https://discord.myceliummod.network).
+*authored by [jason13](https://jason13official.github.io/)*
 
-## Getting Started
+---
 
-### IntelliJ IDEA
-This guide will show how to import the MultiLoader Template into IntelliJ IDEA. The setup process is roughly equivalent to setting up the modloaders independently and should be very familiar to anyone who has worked with their MDKs.
+Spellcasting is a library mod and engine for resolving abstract and data-driven spells in Minecraft.
 
-1. Clone or download this repository to your computer.
-2. Configure the project by setting the properties in the `gradle.properties` file. You will also need to change the `rootProject.name`  property in `settings.gradle`, this should match the folder name of your project, or else IDEA may complain.
-3. Open the template's root folder as a new project in IDEA. This is the folder that contains this README.md file and the gradlew executable.
-4. If your default JVM/JDK is not Java 25 you will encounter an error when opening the project. This error is fixed by going to `File > Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM` and changing the value to a valid Java 25 JVM. You will also need to set the Project SDK to Java 25. This can be done by going to `File > Project Structure > Project SDK`. Once both have been set open the Gradle tab in IDEA and click the refresh button to reload the project.
-5. Open your Run/Debug Configurations. Under the `Application` category there should now be options to run Fabric and NeoForge projects. Select one of the client options and try to run it.
-6. Assuming you were able to run the game in step 5 your workspace should now be set up.
+*Inspired by mods such as:*
+- [Ars Magicka 2](https://www.curseforge.com/minecraft/mc-mods/ars-magica-2),
+- [Thaumcraft](https://www.curseforge.com/minecraft/mc-mods/thaumcraft),
+- [EvilCraft](https://www.curseforge.com/minecraft/mc-mods/evilcraft),
+- [Blood Magic](https://www.curseforge.com/minecraft/mc-mods/blood-magic),
+- [Ars Nouveau](https://www.curseforge.com/minecraft/mc-mods/ars-nouveau),
+- [Electroblob's Wizardy](https://www.curseforge.com/minecraft/mc-mods/electroblobs-wizardry),
+- [Witchery](https://www.curseforge.com/minecraft/mc-mods/witchery),
+- [Iron's Spells 'n Spellbooks](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks),
+- [Mahou Tsukai](https://www.curseforge.com/minecraft/mc-mods/mahou-tsukai)
+- [Botania](https://www.curseforge.com/minecraft/mc-mods/botania)
+- [Mystical Agriculture](https://www.curseforge.com/minecraft/mc-mods/mystical-agriculture)
+- [Apotheosis](https://www.curseforge.com/minecraft/mc-mods/apotheosis)
+- and more.
 
-### Eclipse
-While it is possible to use this template in Eclipse it is not recommended. During the development of this template multiple critical bugs and quirks related to Eclipse were found at nearly every level of the required build tools. While we continue to work with these tools to report and resolve issues support for projects like these are not there yet. For now Eclipse is considered unsupported by this project. The development cycle for build tools is notoriously slow so there are no ETAs available.
+---
 
-## Development Guide
-When using this template the majority of your mod should be developed in the `common` project. The `common` project is compiled against the vanilla game and is used to hold code that is shared between the different loader-specific versions of your mod. The `common` project has no knowledge or access to ModLoader specific code, apis, or concepts. Code that requires something from a specific loader must be done through the project that is specific to that loader, such as the `fabric` or `neoforge` projects.
+### Note
 
-Loader specific projects such as the `fabric` and `neoforge` project are used to load the `common` project into the game. These projects also define code that is specific to that loader. Loader specific projects can access all the code in the `common` project. It is important to remember that the `common` project can not access code from loader specific projects.
+**To Modpack Developers, Server Owners, etc.:** 
 
-## Removing Platforms and Loaders
-While this template has support for many modloaders, new loaders may appear in the future, and existing loaders may become less relevant.
+While this mod does add some content, a configuration file is generated the first time you run the game with this mod installed.
 
-Removing loader specific projects is as easy as deleting the folder, and removing the `include("projectname")` line from the `settings.gradle` file.
-For example if you wanted to remove support for `forge` you would follow the following steps:
+You SHOULD be editing this; the values are provided for you to customize the intended experience for you and your players.
 
-1. Delete the subproject folder. For example, delete `MultiLoader-Template/forge`.
-2. Remove the project from `settings.gradle`. For example, remove `include("forge")`. 
+**To Addon/Mod Developers:** Please let me know if you think something should change! I encourage [opening a new issue](https://github.com/jason13official/Spellcasting/issues)!
+
+---
+
+### What is a spell?
+
+Quoting [the 2014 rules of D&d](https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting), a spell is "*a discrete magical effect, a single shaping of the magical energies that suffuse the multiverse into a specific, limited expression.*"
+
+In terms of Minecraft, a "spell" is *magic having an effect on the world*; a formula for taking raw energy and telling it how to form, where to go, and what to do.
+
+This can be observed in many fashions; some spells may be cast when a player flicks their wand or reads from their grimoire, others might be triggered reactively when an entity activates a ward, maybe cast repeatedly from a spell turret, or invoked from a successful ritual.
+
+[//]: # (Server, Dimension, Chunk, Block, Entity)
+
+Spells answer questions:
+
+- Shape: how does the spell propagate through existence?
+  - Examples: Projectile, Self, Touch, Pantomime, Underfoot
+- Effect: how does the spell change the world?
+  - Examples: Transformation, Force, Life/Death, Space, Information, Binding
+- Cost: how do you make it obey?
+  - Examples: Environment (Aura, Nodes), Reservoir (Blood network, Source jar), Self (health points)
+
+
+
+### How are spells cast?
+
+This depends on the spell, some are too powerful for mortal bodies to conduct, and must be passed through materials found in the world or specially crafted to conduct the spell.
+
+Depending on the target of the spell (Realm/Server, Dimension/Level, Chunk, Block, Entity), the cost of an individual spell could use enough energy to burn a caster alive.
+
+With that being said, most spells are invoked via items, at a cost to the player.
