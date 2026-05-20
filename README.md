@@ -43,8 +43,6 @@ In terms of Minecraft, a "spell" is *magic having an effect on the world*; a for
 
 This can be observed in many fashions; some spells may be cast when a player flicks their wand or reads from their grimoire, others might be triggered reactively when an entity activates a ward, maybe cast repeatedly from a spell turret, or invoked from a successful ritual.
 
-[//]: # (Server, Dimension, Chunk, Block, Entity)
-
 Spells answer questions:
 
 - Shape: how does the spell propagate through existence?
@@ -54,12 +52,17 @@ Spells answer questions:
 - Cost: how do you make it obey?
   - Examples: Environment (Aura, Nodes), Reservoir (Blood network, Source jar), Self (health points)
 
+---
 
+**[How are spells cast?](./README_DESIGN.md)**
 
-### How are spells cast?
+[//]: # (### How are spells cast?)
 
-This depends on the spell, some are too powerful for mortal bodies to conduct, and must be passed through materials found in the world or specially crafted to conduct the spell.
+[//]: # ()
+[//]: # (This depends on the spell, some are too powerful for mortal bodies to conduct, and must be passed through materials found in the world or specially crafted to conduct the spell.)
 
-Depending on the target of the spell (Realm/Server, Dimension/Level, Chunk, Block, Entity), the cost of an individual spell could use enough energy to burn a caster alive.
+[//]: # ()
+[//]: # (Depending on the target of the spell &#40;Realm/Server, Dimension/Level, Chunk, Block, Entity&#41;, the cost of an individual spell could use enough energy to burn a caster alive.)
 
-With that being said, most spells are invoked via items, at a cost to the player.
+[//]: # ()
+[//]: # (With that being said, most spells are invoked via items, at a cost to the player.)
