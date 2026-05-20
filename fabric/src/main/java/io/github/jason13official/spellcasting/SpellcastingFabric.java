@@ -1,6 +1,7 @@
 package io.github.jason13official.spellcasting;
 
 import io.github.jason13official.spellcasting.impl.common.registry.ModBlocks;
+import io.github.jason13official.spellcasting.impl.common.registry.ModDataComponents;
 import io.github.jason13official.spellcasting.impl.common.registry.ModEntities;
 import io.github.jason13official.spellcasting.impl.common.registry.ModItems;
 import io.github.jason13official.spellcasting.impl.common.registry.ModMenus;
@@ -10,11 +11,10 @@ import io.github.jason13official.spellcasting.impl.common.registry.ModTiles;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.impl.resource.DataResourceLoaderImpl;
+import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -31,10 +31,11 @@ public class SpellcastingFabric implements ModInitializer {
     bind(BuiltInRegistries.BLOCK_ENTITY_TYPE, ModTiles::register);
     bind(BuiltInRegistries.MENU, ModMenus::register);
     bind(BuiltInRegistries.CREATIVE_MODE_TAB, ModTabs::register);
+    bind(BuiltInRegistries.DATA_COMPONENT_TYPE, ModDataComponents::register);
 
     Spellcasting.init();
 
-    DataResourceLoaderImpl.get(PackType.SERVER_DATA).registerReloadListener(Spellcasting.identifier(Constants.MOD_ID), new ResourceReloadListener());
+    DataResourceLoader.get().registerReloadListener(Spellcasting.id(Constants.MOD_ID), new ResourceReloadListener());
   }
 
   public <T> void bind(Registry<T> registry, Consumer<BiConsumer<T, Identifier>> source) {
@@ -46,7 +47,7 @@ public class SpellcastingFabric implements ModInitializer {
 
     @Override
     public String getName() {
-      return Spellcasting.identifier(Constants.MOD_ID).toString();
+      return Spellcasting.id(Constants.MOD_ID).toString();
     }
 
     @Override

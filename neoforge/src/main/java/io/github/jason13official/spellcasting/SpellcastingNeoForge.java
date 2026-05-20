@@ -1,6 +1,7 @@
 package io.github.jason13official.spellcasting;
 
 import io.github.jason13official.spellcasting.impl.common.registry.ModBlocks;
+import io.github.jason13official.spellcasting.impl.common.registry.ModDataComponents;
 import io.github.jason13official.spellcasting.impl.common.registry.ModEntities;
 import io.github.jason13official.spellcasting.impl.common.registry.ModItems;
 import io.github.jason13official.spellcasting.impl.common.registry.ModMenus;
@@ -41,11 +42,12 @@ public class SpellcastingNeoForge {
     bind(Registries.BLOCK_ENTITY_TYPE, ModTiles::register);
     bind(Registries.MENU, ModMenus::register);
     bind(Registries.CREATIVE_MODE_TAB, ModTabs::register);
+    bind(Registries.DATA_COMPONENT_TYPE, ModDataComponents::register);
 
     EVENT_BUS.addListener((Consumer<FMLCommonSetupEvent>) event -> Spellcasting.init());
 
     NeoForge.EVENT_BUS.addListener((Consumer<AddServerReloadListenersEvent>) event -> {
-      event.addListener(Spellcasting.identifier(Constants.MOD_ID), new ResourceReloadListener());
+      event.addListener(Spellcasting.id(Constants.MOD_ID), new ResourceReloadListener());
     });
 
     if (FMLLoader.getCurrent().getDist() == Dist.CLIENT) {
@@ -66,7 +68,7 @@ public class SpellcastingNeoForge {
 
     @Override
     public String getName() {
-      return Spellcasting.identifier(Constants.MOD_ID).toString();
+      return Spellcasting.id(Constants.MOD_ID).toString();
     }
 
     @Override

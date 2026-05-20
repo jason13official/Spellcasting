@@ -1,0 +1,11 @@
+package io.github.jason13official.spellcasting.impl.common.registry;
+
+import java.util.function.BiConsumer;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.Identifier;
+
+public class ModDataComponents {
+
+  public static void register(BiConsumer<DataComponentType<?>, Identifier> consumer) {
+  }
+}

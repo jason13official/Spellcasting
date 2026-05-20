@@ -7,7 +7,7 @@ public class Spellcasting {
   public static void init() {
   }
 
-  public static Identifier identifier(final String path) {
+  public static Identifier id(final String path) {
     return Identifier.fromNamespaceAndPath(Constants.MOD_ID, path);
   }
 }
