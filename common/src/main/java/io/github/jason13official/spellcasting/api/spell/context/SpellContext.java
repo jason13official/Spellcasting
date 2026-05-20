@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 @SuppressWarnings("all")
@@ -18,19 +19,22 @@ public final class SpellContext {
   private final Optional<BlockPos> blockPos;
   private final Optional<Vec3> pos;
   private final Optional<Entity> entity;
+  private final Optional<HitResult> hitResult;
 
   public SpellContext(Optional<MinecraftServer> server,
       Optional<Level> level,
       Optional<ChunkAccess> chunk,
       Optional<BlockPos> blockPos,
       Optional<Vec3> pos,
-      Optional<Entity> entity) {
+      Optional<Entity> entity,
+      Optional<HitResult> hitResult) {
     this.server = server;
     this.level = level;
     this.chunk = chunk;
     this.blockPos = blockPos;
     this.pos = pos;
     this.entity = entity;
+    this.hitResult = hitResult;
   }
 
   public Optional<MinecraftServer> server() {
@@ -57,6 +61,10 @@ public final class SpellContext {
     return entity;
   }
 
+  public Optional<HitResult> hitResult() {
+    return hitResult;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (obj == this) {
@@ -71,12 +79,13 @@ public final class SpellContext {
         Objects.equals(this.chunk, that.chunk) &&
         Objects.equals(this.blockPos, that.blockPos) &&
         Objects.equals(this.pos, that.pos) &&
-        Objects.equals(this.entity, that.entity);
+        Objects.equals(this.entity, that.entity) &&
+        Objects.equals(this.hitResult, that.hitResult);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(server, level, chunk, blockPos, pos, entity);
+    return Objects.hash(server, level, chunk, blockPos, pos, entity, hitResult);
   }
 
   @Override
@@ -87,6 +96,7 @@ public final class SpellContext {
         "chunk=" + chunk + ", " +
         "blockPos=" + blockPos + ", " +
         "pos=" + pos + ", " +
-        "entity=" + entity + ']';
+        "entity=" + entity + ", " +
+        "hitResult=" + hitResult + ']';
   }
 }

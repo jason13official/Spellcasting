@@ -1,4 +1,4 @@
-package io.github.jason13official.spellcasting.impl.common.content.spell.augment;
+package io.github.jason13official.spellcasting.impl.common.content.spell.augmentation;
 
 import io.github.jason13official.spellcasting.Spellcasting;
 import io.github.jason13official.spellcasting.api.spell.AbstractSpellPart;
