@@ -18,7 +18,7 @@ public abstract class AbstractSpellPart implements Comparable<AbstractSpellPart>
   /// using {@link ConcurrentHashMap#newKeySet()} instead
   private final Set<Identifier> compatibleAugmentIdSet = ConcurrentHashMap.newKeySet();
 
-  private final Set<Identifier> inompatibleAugmentIdSet = ConcurrentHashMap.newKeySet();
+  private final Set<Identifier> incompatibleAugmentIdSet = ConcurrentHashMap.newKeySet();
 
   /// shorthand for registering internal
   public AbstractSpellPart(String internalIdPath) {
@@ -30,7 +30,7 @@ public abstract class AbstractSpellPart implements Comparable<AbstractSpellPart>
     this.translationKey = translationKeyFromId(id);
 
     this.compatibleAugmentIdSet.addAll(this.getCompatibleAugments());
-    this.inompatibleAugmentIdSet.addAll(this.getIncompatibleAugments());
+    this.incompatibleAugmentIdSet.addAll(this.getIncompatibleAugments());
   }
 
   /// augments must define which augments they are compatible with
@@ -40,6 +40,12 @@ public abstract class AbstractSpellPart implements Comparable<AbstractSpellPart>
   public abstract Set<Identifier> getIncompatibleAugments();
 
   public abstract int getCastingCost();
+
+  public abstract int typeIndex();
+
+  public boolean isEnabled() {
+    return true;
+  }
 
   public Identifier id() {
 

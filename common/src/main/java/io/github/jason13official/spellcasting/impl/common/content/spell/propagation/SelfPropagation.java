@@ -1,0 +1,43 @@
+package io.github.jason13official.spellcasting.impl.common.content.spell.propagation;
+
+import io.github.jason13official.spellcasting.Spellcasting;
+import io.github.jason13official.spellcasting.api.spell.CastResolveType;
+import io.github.jason13official.spellcasting.api.spell.SpellResolver;
+import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
+import io.github.jason13official.spellcasting.api.spell.part.AbstractPropagation;
+import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
+import java.util.Set;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.EntityHitResult;
+
+public class SelfPropagation extends AbstractPropagation {
+
+  public static final Identifier ID = Spellcasting.id("self");
+  public static final SelfPropagation INSTANCE = new SelfPropagation();
+
+  public SelfPropagation() {
+    super(ID);
+  }
+
+  @Override
+  public CastResolveType onCast(SpellStats stats, SpellContext context, SpellResolver resolver) {
+    EntityHitResult selfHit = new EntityHitResult(context.entity().get());
+    resolver.onResolveEffect(selfHit, context.level().get());
+    return CastResolveType.SUCCESS;
+  }
+
+  @Override
+  public Set<Identifier> getCompatibleAugments() {
+    return Set.of();
+  }
+
+  @Override
+  public Set<Identifier> getIncompatibleAugments() {
+    return Set.of();
+  }
+
+  @Override
+  public int getCastingCost() {
+    return 5;
+  }
+}

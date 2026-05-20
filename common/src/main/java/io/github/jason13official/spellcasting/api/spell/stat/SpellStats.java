@@ -2,11 +2,19 @@ package io.github.jason13official.spellcasting.api.spell.stat;
 
 import io.github.jason13official.spellcasting.api.spell.AbstractSpellPart;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
+import io.github.jason13official.spellcasting.api.spell.part.AbstractAugmentation;
+import java.util.List;
 
 public final class SpellStats {
 
   private int level;
   private float amplification;
+  private float aoe;
+  private float acceleration;
+  private float duration;
+  private float damage;
+  private boolean sensitive;
+  private List<AbstractAugmentation> augments;
 
   public SpellStats() {
   }
@@ -17,6 +25,30 @@ public final class SpellStats {
 
   public float amplification() {
     return amplification;
+  }
+
+  public float aoe() {
+    return aoe;
+  }
+
+  public float acceleration() {
+    return acceleration;
+  }
+
+  public float duration() {
+    return duration;
+  }
+
+  public float damage() {
+    return damage;
+  }
+
+  public boolean isSensitive() {
+    return sensitive;
+  }
+
+  public List<AbstractAugmentation> augments() {
+    return augments != null ? augments : List.of();
   }
 
   public static Builder builder() {
@@ -32,6 +64,11 @@ public final class SpellStats {
     }
 
     public SpellStats build(AbstractSpellPart part, SpellContext context) {
+      if (stats.augments != null) {
+        for (AbstractAugmentation aug : stats.augments) {
+          aug.applyModifiers(this, part, context);
+        }
+      }
       return stats;
     }
 
@@ -45,8 +82,38 @@ public final class SpellStats {
       return this;
     }
 
-    public Builder addAmplificationModifier(float acceleration) {
-      stats.amplification += acceleration;
+    public Builder addAmplificationModifier(float amount) {
+      stats.amplification += amount;
+      return this;
+    }
+
+    public Builder addAoeModifier(float amount) {
+      stats.aoe += amount;
+      return this;
+    }
+
+    public Builder addAccelerationModifier(float amount) {
+      stats.acceleration += amount;
+      return this;
+    }
+
+    public Builder addDurationModifier(float amount) {
+      stats.duration += amount;
+      return this;
+    }
+
+    public Builder addDamageModifier(float amount) {
+      stats.damage += amount;
+      return this;
+    }
+
+    public Builder setSensitive(boolean sensitive) {
+      stats.sensitive = sensitive;
+      return this;
+    }
+
+    public Builder setAugments(List<AbstractAugmentation> augments) {
+      stats.augments = augments;
       return this;
     }
   }

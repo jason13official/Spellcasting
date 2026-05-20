@@ -17,7 +17,15 @@ public abstract class AbstractAugmentation extends AbstractSpellPart implements 
   }
 
   @Override
+  public int typeIndex() {
+    return 2;
+  }
+
+  @Override
   public int getCastingCost() {
     return 10;
   }
+
+  @Override
+  public abstract Builder applyModifiers(Builder builder, AbstractSpellPart spellPart, SpellContext spellContext);
 }

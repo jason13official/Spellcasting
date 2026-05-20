@@ -8,18 +8,18 @@ import io.github.jason13official.spellcasting.api.spell.stat.SpellStats.Builder;
 import java.util.Set;
 import net.minecraft.resources.Identifier;
 
-public class AccelerationAugment extends AbstractAugmentation {
+public class AmplifyAugmentation extends AbstractAugmentation {
 
-  public static final Identifier ID = Spellcasting.id("acceleration");
-  public static final AccelerationAugment INSTANCE = new AccelerationAugment();
+  public static final Identifier ID = Spellcasting.id("amplify");
+  public static final AmplifyAugmentation INSTANCE = new AmplifyAugmentation();
 
-  public AccelerationAugment() {
+  public AmplifyAugmentation() {
     super(ID);
   }
 
   @Override
   public Set<Identifier> getCompatibleAugments() {
-    return Set.of();
+    return Set.of(AccelerationAugment.ID);
   }
 
   @Override
@@ -29,6 +29,6 @@ public class AccelerationAugment extends AbstractAugmentation {
 
   @Override
   public Builder applyModifiers(Builder builder, AbstractSpellPart spellPart, SpellContext spellContext) {
-    return builder.addAccelerationModifier(2.0f);
+    return builder.addAmplificationModifier(2.0f);
   }
 }

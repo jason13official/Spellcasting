@@ -5,14 +5,24 @@ import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 @SuppressWarnings("all")
-public final class SpellContext {
+public class SpellContext {
 
+  // Required execution fields
+  // private final LivingEntity caster;
+  // private final Level castLevel;
+  // private final ItemStack casterTool;
+  private boolean canceled;
+  private SpellContext previousContext;
+
+  // Optional contextual data
   private final Optional<MinecraftServer> server;
   private final Optional<Level> level;
   private final Optional<ChunkAccess> chunk;
@@ -21,7 +31,8 @@ public final class SpellContext {
   private final Optional<Entity> entity;
   private final Optional<HitResult> hitResult;
 
-  public SpellContext(Optional<MinecraftServer> server,
+  public SpellContext(
+      Optional<MinecraftServer> server,
       Optional<Level> level,
       Optional<ChunkAccess> chunk,
       Optional<BlockPos> blockPos,
@@ -35,6 +46,22 @@ public final class SpellContext {
     this.pos = pos;
     this.entity = entity;
     this.hitResult = hitResult;
+  }
+
+  public boolean isCanceled() {
+    return canceled;
+  }
+
+  public void setCanceled(boolean canceled) {
+    this.canceled = canceled;
+  }
+
+  public SpellContext getPreviousContext() {
+    return previousContext;
+  }
+
+  public void setPreviousContext(SpellContext previousContext) {
+    this.previousContext = previousContext;
   }
 
   public Optional<MinecraftServer> server() {
