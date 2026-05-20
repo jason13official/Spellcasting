@@ -1,7 +1,8 @@
 package io.github.jason13official.spellcasting.impl.common.registry;
 
 import io.github.jason13official.spellcasting.Spellcasting;
-import io.github.jason13official.spellcasting.impl.common.content.item.WandItem;
+import io.github.jason13official.spellcasting.impl.common.content.item.HealingWandItem;
+import io.github.jason13official.spellcasting.impl.common.content.item.MessageWandItem;
 import java.util.function.BiConsumer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -12,11 +13,15 @@ import net.minecraft.world.item.Item.Properties;
 public class ModItems {
 
   public static Item HEALING_WAND;
+  public static Item MESSAGE_WAND;
 
   public static void register(BiConsumer<Item, Identifier> consumer) {
 
-    HEALING_WAND = new WandItem(new Properties().setId(key(Spellcasting.id("healing_wand"))));
+    HEALING_WAND = new HealingWandItem(new Properties().setId(key(Spellcasting.id("healing_wand"))));
     consumer.accept(HEALING_WAND, Spellcasting.id("healing_wand"));
+
+    MESSAGE_WAND = new MessageWandItem(new Properties().setId(key(Spellcasting.id("message_wand"))));
+    consumer.accept(MESSAGE_WAND, Spellcasting.id("message_wand"));
   }
 
   private static ResourceKey<Item> key(Identifier id) {

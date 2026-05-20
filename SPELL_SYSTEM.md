@@ -32,19 +32,20 @@ Augmentations are **positional** — they bind to the nearest preceding alterati
 
 ### AbstractPropagation
 
-Override `onCast` — this is where you decide what gets hit and call `resolver.onResolveEffect(hitResult, world)` to trigger the alteration loop.
+Override `onCast` — this is where you decide what gets hit. Call `resolver.onResolveEffect(hitResult)` to set the target on the context and trigger the alteration loop.
 
 ```java
 public class SelfPropagation extends AbstractPropagation {
 
     public static final Identifier ID = Spellcasting.id("self");
+    public static final SelfPropagation INSTANCE = new SelfPropagation();
 
     public SelfPropagation() { super(ID); }
 
     @Override
     public CastResolveType onCast(SpellStats stats, SpellContext context, SpellResolver resolver) {
-        EntityHitResult selfHit = new EntityHitResult(context.getCaster());
-        resolver.onResolveEffect(selfHit, context.getCastLevel());
+        EntityHitResult selfHit = new EntityHitResult(context.entity().get());
+        resolver.onResolveEffect(selfHit);  // sets hitResult on context, triggers resume
         return CastResolveType.SUCCESS;
     }
 
@@ -54,7 +55,7 @@ public class SelfPropagation extends AbstractPropagation {
 }
 ```
 
-Optionally override `onCastOnBlock` and `onCastOnEntity` for targeted propagations.
+Optionally override `onCastOnBlock` and `onCastOnEntity` for targeted propagations (default: return `FAILURE`).
 
 **`CastResolveType` values:**
 
@@ -66,22 +67,26 @@ Optionally override `onCastOnBlock` and `onCastOnEntity` for targeted propagatio
 
 ### AbstractAlteration
 
-Override `onResolveEntity` and/or `onResolveBlock`. The base `onResolve` dispatches automatically based on `HitResult` type.
+Override `onResolveEntity` and/or `onResolveBlock`. The base `onResolve` dispatches automatically based on the `HitResult` type stored in `SpellContext`. If no hit result is present in the context, `onResolveNone` is called instead.
 
 ```java
 public class HealAlteration extends AbstractAlteration {
 
     public static final Identifier ID = Spellcasting.id("heal");
+    public static final HealAlteration INSTANCE = new HealAlteration();
 
     public HealAlteration() { super(ID); }
 
     @Override
-    public void onResolveEntity(EntityHitResult hit, Level world, LivingEntity caster,
+    public void onResolveEntity(EntityHitResult hit, Level world, Entity caster,
                                 SpellStats stats, SpellContext context, SpellResolver resolver) {
         if (hit.getEntity() instanceof LivingEntity target) {
-            target.heal(4.0f + stats.amplification());
+            target.heal(4.0f + stats.amplification()); // 4.0f == 2 hearts, 1.0f == 0.5 heart
         }
     }
+
+    // onResolveNone() — called when spell has no hit result (position-only delivery)
+    // default: no-op — override if needed
 
     @Override public Set<Identifier> getCompatibleAugments() { return Set.of(); }
     @Override public Set<Identifier> getIncompatibleAugments() { return Set.of(); }
@@ -97,6 +102,7 @@ Override `applyModifiers` to mutate the `SpellStats.Builder` for the alteration 
 public class AmplifyAugmentation extends AbstractAugmentation {
 
     public static final Identifier ID = Spellcasting.id("amplify");
+    public static final AmplifyAugmentation INSTANCE = new AmplifyAugmentation();
 
     public AmplifyAugmentation() { super(ID); }
 
@@ -134,18 +140,7 @@ A per-alteration snapshot of all modifier values contributed by trailing augment
 
 ## SpellContext
 
-Carries execution state and contextual world data into every part.
-
-**Required execution fields** (always populated during a live cast):
-
-| Field | Accessor |
-|---|---|
-| `LivingEntity caster` | `getCaster()` |
-| `Level castLevel` | `getCastLevel()` |
-| `ItemStack casterTool` | `getCasterTool()` |
-| `boolean canceled` | `isCanceled()` / `setCanceled(boolean)` |
-
-**Optional contextual fields** (populated based on available context):
+Carries execution state and contextual world data. All fields are `Optional` — alterations and propagations read only what they need, handle absences gracefully.
 
 ```java
 Optional<MinecraftServer> server()
@@ -154,52 +149,60 @@ Optional<ChunkAccess>     chunk()
 Optional<BlockPos>        blockPos()
 Optional<Vec3>            pos()
 Optional<Entity>          entity()
-Optional<HitResult>       hitResult()
+Optional<HitResult>       hitResult()    // set by onResolveEffect(); mutable
 ```
 
-**Construction** — use the full constructor for live execution:
+**Mutable state:**
+
+| Field | Accessor | Setter |
+|---|---|---|
+| `boolean canceled` | `isCanceled()` | `setCanceled(boolean)` |
+| `Optional<HitResult> hitResult` | `hitResult()` | `setHitResult(Optional<HitResult>)` |
+| `SpellContext previousContext` | `getPreviousContext()` | `setPreviousContext(SpellContext)` |
+
+**Construction:**
 
 ```java
 SpellContext context = new SpellContext(
-    player,               // LivingEntity caster
-    world,                // Level castLevel
-    heldStack,            // ItemStack casterTool
-    Optional.of(server),
-    Optional.of(world),
-    Optional.empty(),     // chunk
-    Optional.empty(),     // blockPos
-    Optional.empty(),     // pos
-    Optional.of(player),
-    Optional.empty()      // hitResult
+    Optional.empty(),         // server
+    Optional.of(level),       // level
+    Optional.empty(),         // chunk
+    Optional.of(player.blockPosition()),
+    Optional.of(player.position()),
+    Optional.of(player),      // entity (used by SelfPropagation as cast target)
+    Optional.empty()          // hitResult — set automatically by onResolveEffect()
 );
 ```
 
-**Cancellation** — call `context.setCanceled(true)` inside any alteration to abort remaining alterations in the current `resume()` pass.
+**Cancellation** — call `context.setCanceled(true)` inside any alteration to abort remaining alterations in the current resolution pass.
 
 ---
 
 ## SpellResolver
 
-The execution engine. Construct it with a spell, context, and a mana source, then call `onCast`.
+The execution engine. Construct it with a spell, context, and a mana source, then call `onCast()`.
 
 ```java
-IWrappedCaster caster = new PlayerCaster(player);
-SpellContext context   = new SpellContext(player, world, stack, ...);
-Spell spell            = new Spell(SelfPropagation.INSTANCE, HealAlteration.INSTANCE);
+IWrappedCaster<Player> caster = new PlayerCaster(player);
+SpellContext context           = new SpellContext(...);
+Spell spell                    = new Spell(SelfPropagation.INSTANCE, HealAlteration.INSTANCE);
 
 SpellResolver resolver = new SpellResolver(spell, context, caster);
-CastResolveType result = resolver.onCast(world);
+CastResolveType result = resolver.onCast();
 ```
 
 **Execution flow:**
 
 ```
-resolver.onCast(world)
+resolver.onCast()
   → canCast()              checks IWrappedCaster.enoughMana(spell.getCost())
   → spell.getPropagation() finds first AbstractPropagation
   → propagation.onCast(stats, context, resolver)
-      → resolver.onResolveEffect(hitResult, world)   ← called by propagation on hit
-          → resume(hitResult, world)
+      → resolver.onResolveEffect(hitResult)   ← called by propagation on hit
+          → context.setHitResult(Optional.of(hitResult))
+          → resume()
+              Level world  = context.level().orElse(null)
+              Entity caster = context.entity().orElse(null)
               for each part in spell.definition():
                 skip: AbstractAugmentation, disabled parts
                 on AbstractAlteration:
@@ -207,20 +210,30 @@ resolver.onCast(world)
                   SpellStats.builder()
                     .setAugments(augments)
                     .build(alteration, context)  → calls aug.applyModifiers() per augment
-                  alteration.onResolve(hitResult, world, caster, stats, context, resolver)
+                  if context.hitResult().isPresent():
+                    alteration.onResolve(hitResult, world, caster, stats, context, resolver)
+                  else:
+                    alteration.onResolveNone(world, caster, stats, context, resolver)
   → if SUCCESS: IWrappedCaster.expendMana(spell.getCost())
 ```
 
-### IWrappedCaster
+### IWrappedCaster\<T\>
 
-Implement this to connect the resolver to your mana system:
+Implement this to connect the resolver to your mana system. `T` is the caster type (e.g. `Player`).
 
 ```java
-public interface IWrappedCaster {
+public interface IWrappedCaster<T> {
+    T       getCaster();
     boolean enoughMana(int cost);
     void    expendMana(int cost);
     Vec3    getPosition();
 }
+```
+
+**`PlayerCaster`** — provided implementation for player-held casting:
+
+```java
+IWrappedCaster<Player> caster = new PlayerCaster(player);
 ```
 
 ---
@@ -238,7 +251,7 @@ Spell spell = new Spell(
 
 spell.getCost();           // 5 + 15 + 10 + 10 = 40
 spell.getPropagation();    // Optional[SelfPropagation]
-spell.getAugments(1);      // [Amplify, Amplify]  (trailing after index 1)
+spell.getAugments(1);      // [Amplify, Amplify]  (trailing after HealAlteration at index 1)
 ```
 
 When resolved, `HealAlteration` receives `SpellStats` with `amplification = 2.0f`, healing for `4.0 + 2.0 = 6.0` HP.
@@ -254,21 +267,26 @@ api/spell/
   Spell.java                   Immutable recipe record
   SpellResolver.java           Execution engine
   caster/
-    IWrappedCaster.java        Mana abstraction
+    IWrappedCaster.java        Mana abstraction (generic: IWrappedCaster<T>)
   context/
-    SpellContext.java           Execution state + contextual data
+    SpellContext.java           All-Optional execution state
   modifier/
     ISpellModifier.java        Modifier interface (used by ISpellModifierItem)
     ISpellModifierItem.java    Item-stack modifier variant
   part/
-    AbstractPropagation.java   Spell delivery
-    AbstractAlteration.java    Spell effect
-    AbstractAugmentation.java  Stat modifier
+    AbstractPropagation.java   Spell delivery — calls onResolveEffect(hitResult)
+    AbstractAlteration.java    Spell effect — onResolveBlock / onResolveEntity / onResolveNone
+    AbstractAugmentation.java  Stat modifier — applyModifiers(builder, part, context)
   stat/
-    SpellStats.java            Per-alteration stat snapshot
+    SpellStats.java            Per-alteration stat snapshot + Builder
 
 impl/common/content/spell/
+  caster/PlayerCaster.java
   propagation/SelfPropagation.java
   alteration/HealAlteration.java
   augmentation/AccelerationAugment.java
+  augmentation/AmplifyAugmentation.java
+
+impl/common/content/item/
+  WandItem.java                Example item using the full pipeline
 ```

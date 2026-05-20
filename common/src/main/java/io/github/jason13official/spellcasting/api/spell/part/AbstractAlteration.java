@@ -49,4 +49,8 @@ public abstract class AbstractAlteration extends AbstractSpellPart {
   public void onResolveBlock(BlockHitResult rayTraceResult, Level world, Entity shooter,
       SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
   }
+
+  public void onResolveNone(Level world, Entity caster,
+      SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
+  }
 }

@@ -22,7 +22,7 @@ public class SelfPropagation extends AbstractPropagation {
   @Override
   public CastResolveType onCast(SpellStats stats, SpellContext context, SpellResolver resolver) {
     EntityHitResult selfHit = new EntityHitResult(context.entity().get());
-    resolver.onResolveEffect(selfHit, context.level().get());
+    resolver.onResolveEffect(selfHit);
     return CastResolveType.SUCCESS;
   }
 

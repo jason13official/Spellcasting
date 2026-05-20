@@ -29,7 +29,7 @@ public class SpellContext {
   private final Optional<BlockPos> blockPos;
   private final Optional<Vec3> pos;
   private final Optional<Entity> entity;
-  private final Optional<HitResult> hitResult;
+  private Optional<HitResult> hitResult;
 
   public SpellContext(
       Optional<MinecraftServer> server,
@@ -90,6 +90,10 @@ public class SpellContext {
 
   public Optional<HitResult> hitResult() {
     return hitResult;
+  }
+
+  public void setHitResult(Optional<HitResult> hitResult) {
+    this.hitResult = hitResult;
   }
 
   @Override

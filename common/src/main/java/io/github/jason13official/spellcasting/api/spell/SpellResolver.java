@@ -8,6 +8,7 @@ import io.github.jason13official.spellcasting.api.spell.part.AbstractPropagation
 import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
@@ -15,15 +16,15 @@ public class SpellResolver {
 
   private final Spell spell;
   private final SpellContext context;
-  private final IWrappedCaster wrappedCaster;
+  private final IWrappedCaster<?> wrappedCaster;
 
-  public SpellResolver(Spell spell, SpellContext context, IWrappedCaster wrappedCaster) {
+  public SpellResolver(Spell spell, SpellContext context, IWrappedCaster<?> wrappedCaster) {
     this.spell = spell;
     this.context = context;
     this.wrappedCaster = wrappedCaster;
   }
 
-  public CastResolveType onCast(Level world) {
+  public CastResolveType onCast() {
     if (!canCast()) return CastResolveType.FAILURE;
     Optional<AbstractPropagation> prop = spell.getPropagation();
     if (prop.isEmpty()) return CastResolveType.FAILURE;
@@ -33,16 +34,18 @@ public class SpellResolver {
     return result;
   }
 
-  public void onResolveEffect(HitResult hitResult, Level world) {
-    resume(hitResult, world);
+  public void onResolveEffect(HitResult hitResult) {
+    context.setHitResult(Optional.of(hitResult));
+    resume();
   }
 
   private boolean canCast() {
     return wrappedCaster.enoughMana(spell.getCost());
   }
 
-  // TODO we shouldn't rely on a hit result; some spells might not target an entity or block
-  private void resume(HitResult hitResult, Level world) {
+  private void resume() {
+    Level world = context.level().orElse(null);
+    Entity caster = context.entity().orElse(null);
     List<AbstractSpellPart> parts = spell.definition();
     for (int i = 0; i < parts.size(); i++) {
       if (context.isCanceled()) break;
@@ -53,7 +56,13 @@ public class SpellResolver {
         SpellStats stats = SpellStats.builder()
             .setAugments(augments)
             .build(alteration, context);
-        alteration.onResolve(hitResult, world, context.entity().get(), stats, context, this);
+
+        Optional<HitResult> hitResult = context.hitResult();
+        if (hitResult.isPresent()) {
+          alteration.onResolve(hitResult.get(), world, caster, stats, context, this);
+        } else {
+          alteration.onResolveNone(world, caster, stats, context, this);
+        }
       }
     }
   }
@@ -66,7 +75,7 @@ public class SpellResolver {
     return context;
   }
 
-  public IWrappedCaster getWrappedCaster() {
+  public IWrappedCaster<?> getWrappedCaster() {
     return wrappedCaster;
   }
 }
