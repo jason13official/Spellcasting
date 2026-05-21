@@ -5,19 +5,14 @@ import io.github.jason13official.spellcasting.Spellcasting;
 import io.github.jason13official.spellcasting.api.spell.SpellResolver;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractAlteration;
-import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
+import io.github.jason13official.spellcasting.api.spell.stat.SpellEffectStats;
 import io.github.jason13official.spellcasting.platform.Services;
 import java.util.Set;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.ChatType.Bound;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
 
 public class MessageAlteration extends AbstractAlteration {
 
@@ -29,8 +24,8 @@ public class MessageAlteration extends AbstractAlteration {
   }
 
   @Override
-  public void onResolveNone(Level world, Entity caster, SpellStats spellStats, SpellContext context, SpellResolver resolver) {
-    super.onResolveNone(world, caster, spellStats, context, resolver);
+  public void onResolveNone(Level world, Entity caster, SpellEffectStats spellEffectStats, SpellContext context, SpellResolver resolver) {
+    super.onResolveNone(world, caster, spellEffectStats, context, resolver);
 
     Constants.LOG.info("MessageAlteration resolving");
 

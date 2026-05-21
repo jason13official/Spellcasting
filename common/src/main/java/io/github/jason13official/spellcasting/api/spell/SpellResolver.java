@@ -6,7 +6,7 @@ import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractAlteration;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractAugmentation;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractPropagation;
-import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
+import io.github.jason13official.spellcasting.api.spell.stat.SpellEffectStats;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.world.entity.Entity;
@@ -37,7 +37,7 @@ public class SpellResolver {
       return CastResolveType.FAILURE;
     }
 
-    SpellStats stats = SpellStats.builder().build(propagation.get(), context);
+    SpellEffectStats stats = SpellEffectStats.builder().build(propagation.get(), context);
     CastResolveType result = propagation.get().onCast(stats, context, this);
 
     if (result == CastResolveType.SUCCESS) {
@@ -78,7 +78,7 @@ public class SpellResolver {
       if (!part.isEnabled() || part instanceof AbstractAugmentation) continue;
       if (part instanceof AbstractAlteration alteration) {
         List<AbstractAugmentation> augments = spell.getAugments(i);
-        SpellStats stats = SpellStats.builder()
+        SpellEffectStats stats = SpellEffectStats.builder()
             .setAugments(augments)
             .build(alteration, context);
 

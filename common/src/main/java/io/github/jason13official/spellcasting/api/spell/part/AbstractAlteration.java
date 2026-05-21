@@ -3,15 +3,13 @@ package io.github.jason13official.spellcasting.api.spell.part;
 import io.github.jason13official.spellcasting.api.spell.AbstractSpellPart;
 import io.github.jason13official.spellcasting.api.spell.SpellResolver;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
-import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
+import io.github.jason13official.spellcasting.api.spell.stat.SpellEffectStats;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractAlteration extends AbstractSpellPart {
 
@@ -34,7 +32,7 @@ public abstract class AbstractAlteration extends AbstractSpellPart {
   }
 
   public void onResolve(HitResult hitResult, Level world, Entity caster,
-      SpellStats stats, SpellContext context, SpellResolver resolver) {
+      SpellEffectStats stats, SpellContext context, SpellResolver resolver) {
     if (hitResult instanceof BlockHitResult b) {
       onResolveBlock(b, world, caster, stats, context, resolver);
     } else if (hitResult instanceof EntityHitResult e) {
@@ -43,14 +41,14 @@ public abstract class AbstractAlteration extends AbstractSpellPart {
   }
 
   public void onResolveEntity(EntityHitResult rayTraceResult, Level world, Entity shooter,
-      SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
+      SpellEffectStats spellEffectStats, SpellContext spellContext, SpellResolver resolver) {
   }
 
   public void onResolveBlock(BlockHitResult rayTraceResult, Level world, Entity shooter,
-      SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
+      SpellEffectStats spellEffectStats, SpellContext spellContext, SpellResolver resolver) {
   }
 
   public void onResolveNone(Level world, Entity caster,
-      SpellStats spellStats, SpellContext spellContext, SpellResolver resolver) {
+      SpellEffectStats spellEffectStats, SpellContext spellContext, SpellResolver resolver) {
   }
 }

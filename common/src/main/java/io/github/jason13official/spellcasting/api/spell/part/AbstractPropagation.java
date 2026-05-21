@@ -4,7 +4,7 @@ import io.github.jason13official.spellcasting.api.spell.AbstractSpellPart;
 import io.github.jason13official.spellcasting.api.spell.CastResolveType;
 import io.github.jason13official.spellcasting.api.spell.SpellResolver;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
-import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
+import io.github.jason13official.spellcasting.api.spell.stat.SpellEffectStats;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -29,13 +29,13 @@ public abstract class AbstractPropagation extends AbstractSpellPart {
     return 10;
   }
 
-  public abstract CastResolveType onCast(SpellStats stats, SpellContext context, SpellResolver resolver);
+  public abstract CastResolveType onCast(SpellEffectStats stats, SpellContext context, SpellResolver resolver);
 
-  public CastResolveType onCastOnBlock(BlockHitResult hit, SpellStats stats, SpellContext context, SpellResolver resolver) {
+  public CastResolveType onCastOnBlock(BlockHitResult hit, SpellEffectStats stats, SpellContext context, SpellResolver resolver) {
     return CastResolveType.FAILURE;
   }
 
-  public CastResolveType onCastOnEntity(EntityHitResult hit, SpellStats stats, SpellContext context, SpellResolver resolver) {
+  public CastResolveType onCastOnEntity(EntityHitResult hit, SpellEffectStats stats, SpellContext context, SpellResolver resolver) {
     return CastResolveType.FAILURE;
   }
 }

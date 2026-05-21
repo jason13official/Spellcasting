@@ -5,10 +5,9 @@ import io.github.jason13official.spellcasting.api.spell.CastResolveType;
 import io.github.jason13official.spellcasting.api.spell.SpellResolver;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractPropagation;
-import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
+import io.github.jason13official.spellcasting.api.spell.stat.SpellEffectStats;
 import java.util.Set;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.phys.EntityHitResult;
 
 public class ServerPropagation extends AbstractPropagation {
 
@@ -20,7 +19,7 @@ public class ServerPropagation extends AbstractPropagation {
   }
 
   @Override
-  public CastResolveType onCast(SpellStats stats, SpellContext context, SpellResolver resolver) {
+  public CastResolveType onCast(SpellEffectStats stats, SpellContext context, SpellResolver resolver) {
     resolver.onResolveEffect();
     return CastResolveType.SUCCESS;
   }

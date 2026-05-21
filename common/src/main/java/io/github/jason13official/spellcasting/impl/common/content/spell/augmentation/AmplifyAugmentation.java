@@ -4,7 +4,7 @@ import io.github.jason13official.spellcasting.Spellcasting;
 import io.github.jason13official.spellcasting.api.spell.AbstractSpellPart;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractAugmentation;
-import io.github.jason13official.spellcasting.api.spell.stat.SpellStats.Builder;
+import io.github.jason13official.spellcasting.api.spell.stat.SpellEffectStats.Builder;
 import java.util.Set;
 import net.minecraft.resources.Identifier;
 

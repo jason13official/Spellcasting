@@ -5,7 +5,7 @@ import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractAugmentation;
 import java.util.List;
 
-public final class SpellStats {
+public final class SpellEffectStats {
 
   private int level;
   private float amplification;
@@ -16,7 +16,7 @@ public final class SpellStats {
   private boolean sensitive;
   private List<AbstractAugmentation> augments;
 
-  public SpellStats() {
+  public SpellEffectStats() {
   }
 
   public int level() {
@@ -57,13 +57,13 @@ public final class SpellStats {
 
   public static class Builder {
 
-    private SpellStats stats;
+    private SpellEffectStats stats;
 
     public Builder() {
-      this.stats = new SpellStats();
+      this.stats = new SpellEffectStats();
     }
 
-    public SpellStats build(AbstractSpellPart part, SpellContext context) {
+    public SpellEffectStats build(AbstractSpellPart part, SpellContext context) {
       if (stats.augments != null) {
         for (AbstractAugmentation aug : stats.augments) {
           aug.applyModifiers(this, part, context);
