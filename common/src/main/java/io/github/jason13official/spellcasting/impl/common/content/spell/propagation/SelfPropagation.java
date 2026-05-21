@@ -1,11 +1,13 @@
 package io.github.jason13official.spellcasting.impl.common.content.spell.propagation;
 
+import io.github.jason13official.spellcasting.Constants;
 import io.github.jason13official.spellcasting.Spellcasting;
 import io.github.jason13official.spellcasting.api.spell.CastResolveType;
 import io.github.jason13official.spellcasting.api.spell.SpellResolver;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractPropagation;
 import io.github.jason13official.spellcasting.api.spell.stat.SpellStats;
+import java.util.Optional;
 import java.util.Set;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.EntityHitResult;
@@ -21,8 +23,17 @@ public class SelfPropagation extends AbstractPropagation {
 
   @Override
   public CastResolveType onCast(SpellStats stats, SpellContext context, SpellResolver resolver) {
-    EntityHitResult selfHit = new EntityHitResult(context.entity().get());
-    resolver.onResolveEffect(selfHit);
+//    EntityHitResult selfHit = new EntityHitResult(context.entity().get());
+//    resolver.onResolveEffect(selfHit);
+//    Constants.LOG.info("SelfPropagation resolved on entity with context");
+    return onCastOnEntity(new EntityHitResult(context.entity().get()), stats, context, resolver);
+  }
+
+  @Override
+  public CastResolveType onCastOnEntity(EntityHitResult hit, SpellStats stats, SpellContext context, SpellResolver resolver) {
+    Constants.LOG.info("SelfPropagation resolved on entity directly, clientside? {}", hit.getEntity().level().isClientSide());
+    context.setHitResult(Optional.of(hit));
+    resolver.onResolveEffect();
     return CastResolveType.SUCCESS;
   }
 

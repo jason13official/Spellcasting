@@ -1,5 +1,6 @@
 package io.github.jason13official.spellcasting.api.spell;
 
+import io.github.jason13official.spellcasting.Constants;
 import io.github.jason13official.spellcasting.api.spell.caster.IWrappedCaster;
 import io.github.jason13official.spellcasting.api.spell.context.SpellContext;
 import io.github.jason13official.spellcasting.api.spell.part.AbstractAlteration;
@@ -25,19 +26,31 @@ public class SpellResolver {
   }
 
   public CastResolveType onCast() {
-    if (!canCast()) return CastResolveType.FAILURE;
-    Optional<AbstractPropagation> prop = spell.getPropagation();
-    if (prop.isEmpty()) return CastResolveType.FAILURE;
-    SpellStats stats = SpellStats.builder().build(prop.get(), context);
-    CastResolveType result = prop.get().onCast(stats, context, this);
-    if (result == CastResolveType.SUCCESS) wrappedCaster.expendMana(spell.getCost());
+
+    if (!this.canCast()) {
+      return CastResolveType.FAILURE;
+    }
+
+    Optional<AbstractPropagation> propagation = spell.getPropagation();
+
+    if (propagation.isEmpty()) {
+      return CastResolveType.FAILURE;
+    }
+
+    SpellStats stats = SpellStats.builder().build(propagation.get(), context);
+    CastResolveType result = propagation.get().onCast(stats, context, this);
+
+    if (result == CastResolveType.SUCCESS) {
+      wrappedCaster.expendMana(spell.getCost());
+    }
+
     return result;
   }
 
-  public void onResolveEffect(HitResult hitResult) {
-    context.setHitResult(Optional.of(hitResult));
-    this.resume();
-  }
+//  public void onResolveEffect(HitResult hitResult) {
+//    context.setHitResult(Optional.of(hitResult));
+//    this.resume();
+//  }
 
   public void onResolveEffect() {
     this.resume();
@@ -51,9 +64,17 @@ public class SpellResolver {
     Level world = context.level().orElse(null);
     Entity caster = context.entity().orElse(null);
     List<AbstractSpellPart> parts = spell.definition();
+
+    if (world == null || caster == null) {
+      return;
+    }
+
     for (int i = 0; i < parts.size(); i++) {
       if (context.isCanceled()) break;
       AbstractSpellPart part = parts.get(i);
+
+      Constants.LOG.info("resolving abstract spell part of id {}", part.id().toString());
+
       if (!part.isEnabled() || part instanceof AbstractAugmentation) continue;
       if (part instanceof AbstractAlteration alteration) {
         List<AbstractAugmentation> augments = spell.getAugments(i);
