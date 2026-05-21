@@ -45,4 +45,6 @@ public interface IPlatformHelper {
   }
 
   CreativeModeTab.Builder tabBuilder();
+
+  boolean isClientside();
 }

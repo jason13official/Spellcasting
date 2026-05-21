@@ -36,7 +36,11 @@ public class SpellResolver {
 
   public void onResolveEffect(HitResult hitResult) {
     context.setHitResult(Optional.of(hitResult));
-    resume();
+    this.resume();
+  }
+
+  public void onResolveEffect() {
+    this.resume();
   }
 
   private boolean canCast() {

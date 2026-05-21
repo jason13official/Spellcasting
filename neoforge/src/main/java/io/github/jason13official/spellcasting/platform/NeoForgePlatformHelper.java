@@ -4,6 +4,7 @@ import io.github.jason13official.spellcasting.platform.services.IPlatformHelper;
 import java.nio.file.Path;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.Builder;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
@@ -37,5 +38,11 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
   public Builder tabBuilder() {
 
     return CreativeModeTab.builder();
+  }
+
+  @Override
+  public boolean isClientside() {
+
+    return FMLLoader.getCurrent().getDist() == Dist.CLIENT;
   }
 }

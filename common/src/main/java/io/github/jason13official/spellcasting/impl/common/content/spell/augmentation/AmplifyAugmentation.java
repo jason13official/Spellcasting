@@ -29,6 +29,6 @@ public class AmplifyAugmentation extends AbstractAugmentation {
 
   @Override
   public Builder applyModifiers(Builder builder, AbstractSpellPart spellPart, SpellContext spellContext) {
-    return builder.addAmplificationModifier(2.0f);
+    return builder.addAmplificationModifier(2.0f); // in case of healing alteration, currently adds another heart
   }
 }

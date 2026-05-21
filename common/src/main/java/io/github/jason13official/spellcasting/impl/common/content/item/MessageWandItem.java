@@ -11,6 +11,7 @@ import io.github.jason13official.spellcasting.impl.common.content.spell.alterati
 import io.github.jason13official.spellcasting.impl.common.content.spell.alteration.MessageAlteration;
 import io.github.jason13official.spellcasting.impl.common.content.spell.augmentation.AmplifyAugmentation;
 import io.github.jason13official.spellcasting.impl.common.content.spell.propagation.SelfPropagation;
+import io.github.jason13official.spellcasting.impl.common.content.spell.propagation.ServerPropagation;
 import java.util.Optional;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -32,7 +33,7 @@ public class MessageWandItem extends Item {
     // level, blockPos, pos, player
     SpellContext context = new SpellContext(Optional.ofNullable(level instanceof ServerLevel ? level.getServer() : null), Optional.of(level), Optional.empty(), Optional.of(player.blockPosition()), Optional.of(player.position()), Optional.of(player), Optional.empty());
 
-    Spell spell = new Spell(SelfPropagation.INSTANCE, MessageAlteration.INSTANCE);
+    Spell spell = new Spell(ServerPropagation.INSTANCE, MessageAlteration.INSTANCE);
 
     SpellResolver resolver = new SpellResolver(spell, context, caster);
 

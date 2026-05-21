@@ -2,6 +2,7 @@ package io.github.jason13official.spellcasting.platform;
 
 import io.github.jason13official.spellcasting.platform.services.IPlatformHelper;
 import java.nio.file.Path;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.item.CreativeModeTab.Builder;
@@ -36,5 +37,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
   public Builder tabBuilder() {
 
     return FabricCreativeModeTab.builder();
+  }
+
+  @Override
+  public boolean isClientside() {
+
+    return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
   }
 }
